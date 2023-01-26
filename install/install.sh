@@ -14,8 +14,9 @@ mkdir /usr/etc/fanctrl -p
 mkdir /usr/lib/fanctrl -p
 pwd
 cp ./deploy/*.jar /usr/lib/fanctrl/
+chmod -R 766 /usr/lib/fanctrl/
 cp ./deploy/fanctrl.sh /usr/bin/fanctrl
 cp ./deploy/fanctrl.properties /usr/etc/fanctrl/
-sed -i 's/$DIR_ROOT"\/fanCtrl-/\/usr\/lib\/fanctrl\/fanCtrl-/' /usr/bin/fanctrl
+sed -i 's/$DIR_ROOT"\/fanCtrl-/"\/usr\/lib\/fanctrl\/fanCtrl-/' /usr/bin/fanctrl
 sed -i 's/$DIR_ROOT\/\*\.log/\/var\/log\/fanctrl.log/' /usr/bin/fanctrl
 sed -i 's/logFile=/logFile=\/var\/log\/fanctrl.log/' /usr/etc/fanctrl/fanctrl.properties
