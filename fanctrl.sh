@@ -19,7 +19,7 @@ done
 PRGDIR=`dirname "$PRG"`
 DIR_ROOT=`cd "$PRGDIR" ; pwd`
 #if [$# -eq '0' -o $1 -ne 'stop' -a $1 -ne 'start']; then
-if echo $1 | egrep -v "(startcd ././)|(stop)|(run)"
+if echo $1 | egrep -v "(start)|(stop)|(run)"
 then
   echo $0 '<start|run|stop>'
 
@@ -29,7 +29,7 @@ java -jar $DIR_ROOT"/fanCtrl-{version}.jar" $@
 exit
 elif echo $1 | egrep -q "run"
 then
-  
+
 java -jar $DIR_ROOT"/fanCtrl-{version}.jar" $@
 exit
 elif echo $1 | egrep -q "start"

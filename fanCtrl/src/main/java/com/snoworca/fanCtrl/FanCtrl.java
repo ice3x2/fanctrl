@@ -6,7 +6,7 @@ import java.io.IOException;
 public class FanCtrl implements LmSensorsTempMonitor.OnErrorCallback, LmSensorsTempMonitor.OnReadListener {
     private Config config;
     private PinCtrl pinCtrl;
-    private LmSensorsTempMonitor tempMonitor;
+    private LmSensorsTempMonitor tempMonictor;
     private SimpleLogger logger;
     private int lastTempLength = 0;
 
