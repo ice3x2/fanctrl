@@ -1,0 +1,68 @@
+import java.nio.file.Files
+import java.nio.file.StandardOpenOption
+
+plugins {
+    id 'java'
+}
+
+group 'com.snoworca.fanCtrl'
+version '0.1.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class' : 'com.snoworca.fanCtrl.Main'
+    }
+}
+
+
+task clearBuildDir {
+    delete project.buildDir
+    def deployDir = new File(rootDir.getParentFile(), "deploy")
+    delete deployDir
+    mkdir deployDir
+}
+task copyResoucres {
+    def deployDir = new File(rootDir.getParentFile(), "deploy")
+    def shellFileOri = new File(rootDir.getParentFile(), "fanctrl.sh")
+    def shellFileDst = new File(deployDir, "fanctrl.sh")
+    copy {
+        from project.sourceSets.main.resources.srcDirs[0]
+        into deployDir
+        include 'fanctrl.properties'
+    }
+    byte[] buffer =  Files.readAllBytes(shellFileOri.toPath());
+    String shScript = new String(buffer);
+    shScript = shScript.replace("{version}", project.version);
+    Files.write(shellFileDst.toPath(), shScript.getBytes(), StandardOpenOption.CREATE);
+    Process proc = Runtime.getRuntime().exec("chmod 755 " + shellFileDst.getAbsolutePath());
+    InputStream stream = proc.getInputStream();
+    OutputStream outStream = proc.getOutputStream();
+    InputStream errorStream = proc.getErrorStream();
+}
+
+
+project.build.dependsOn(project.clearBuildDir)
+project.build.mustRunAfter(project.clearBuildDir,project.copyResoucres, project.compileJava)
+
+project.build.doLast {
+    def deployDir = new File(rootDir.getParentFile(), "deploy")
+    copy {
+        from project.buildDir.getAbsolutePath() + "/libs"
+        into deployDir
+        include '*.*'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
