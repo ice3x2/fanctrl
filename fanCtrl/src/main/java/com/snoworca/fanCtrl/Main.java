@@ -8,11 +8,10 @@ import java.nio.file.Files;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        args = new String[]{"run"};
         boolean existArgs = args != null && args.length > 0;
-
         if(existArgs && "stop".equalsIgnoreCase(args[0])) {
             oldProcessKill();
+            return;
         }
         else if(existArgs && ("start".equalsIgnoreCase(args[0]) || "run".equalsIgnoreCase(args[0]) ) ) {
             oldProcessKillAndCreatePidFile();
@@ -27,28 +26,20 @@ public class Main {
     }
 
     public static void oldProcessKill() throws IOException {
-        File file = new File(".pid");
+        File file = new File(Systool.currentDirFile(), ".pid");
         if (file.exists()) {
             String pid = Files.readString(file.toPath(), StandardCharsets.UTF_8);
             if(Systool.isProcessAlive(pid)) {
-                System.out.println("Process is alive. pid: " + pid);
-                while (!Systool.killProcess(pid)) {
-                    try {
-                        System.out.println("Process is alive. pid: " + pid);
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                Systool.killProcess(pid);
                 System.out.println("Process is killed. pid: " + pid);
             }
         }
-        file.delete();
     }
 
     public static void oldProcessKillAndCreatePidFile() throws IOException {
         oldProcessKill();
-        File file = new File(".pid");
+        File currentDir = Systool.currentDirFile();
+        File file = new File(currentDir, ".pid");
         file.delete();
         Files.write(file.toPath(), (Systool.pid() + "").getBytes());
         System.out.println("New process pid: " + Systool.pid());

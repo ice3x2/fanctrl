@@ -3,6 +3,7 @@ package com.snoworca.fanCtrl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
 public class Config {
@@ -46,7 +47,10 @@ public class Config {
     }
 
     public void read() {
-        File file = new File(CONFIG_FILENAME);
+        File currentDir = Systool.currentDirFile();
+        File defaultLogFile = new File(currentDir, DEFAULT_LOG_FILE);
+        File file = new File(currentDir, CONFIG_FILENAME);
+        System.out.println(file.getAbsolutePath());
         InputStream inputStream;
         try {
             if(file.getAbsolutePath().startsWith("/usr/")) {
@@ -66,7 +70,7 @@ public class Config {
             String strOffTemp = properties.getProperty("fanOff", DEFAULT_OFF_TEMP + "").trim();
             String strPinNumber = properties.getProperty("fanPin", DEFAULT_PIN_NUMBER + "").trim();
             String strInterval = properties.getProperty("interval", DEFAULT_INTERVAL + "").trim();
-            logFile = properties.getProperty("logFile", DEFAULT_LOG_FILE + "").trim();
+            logFile = properties.getProperty("logFile", defaultLogFile.getAbsolutePath() + "").trim();
             fanOnTemp = toFloat(strOnTemp, DEFAULT_ON_TEMP);
             fanOffTemp = toFloat(strOffTemp, DEFAULT_OFF_TEMP);
             pinNumber = toInt(strPinNumber, DEFAULT_PIN_NUMBER);
@@ -75,7 +79,7 @@ public class Config {
                 interval = DEFAULT_INTERVAL;
             }
             if(logFile.isEmpty() || !new File(logFile).canWrite()) {
-                logFile = DEFAULT_LOG_FILE;
+                logFile = defaultLogFile.getAbsolutePath();
             }
 
         } catch (Exception e) {

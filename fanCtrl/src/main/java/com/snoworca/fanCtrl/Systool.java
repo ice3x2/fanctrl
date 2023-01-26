@@ -4,6 +4,7 @@ import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.InetAddress;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,6 +14,14 @@ public class Systool {
 
     private static long PID = -1;
     private static String Hostname = null;
+
+    public static File currentDirFile() {
+        try {
+            return new File(new File(Config.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath()).getParentFile();
+        } catch (URISyntaxException e) {
+            return new File("." + File.separator);
+        }
+    }
 
     private static Executor RunProcExecutor = Executors.newCachedThreadPool(new ThreadFactory() {
         AtomicInteger counter = new AtomicInteger(0);
@@ -104,8 +113,9 @@ public class Systool {
 
     public static boolean killProcess(String pid) {
         try {
-            String cmd = isWindows() ? "taskkill.exe /pid " + pid + " /f" : "kill " + pid;
-            exec(cmd, 3000);
+            String cmd = isWindows() ? "taskkill.exe /pid " + pid + " /f" : "kill -9 " + pid;
+            String result = exec(cmd, 3000);
+            System.out.println(result);
             return isProcessAlive(pid);
         } catch (Exception e) {
             throw new RuntimeException(e);
