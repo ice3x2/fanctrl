@@ -8,13 +8,17 @@ import java.nio.file.Files;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        if(args != null && args.length > 0 && "stop".equalsIgnoreCase(args[0])) {
+        args = new String[]{"run"};
+        boolean existArgs = args != null && args.length > 0;
+
+        if(existArgs && "stop".equalsIgnoreCase(args[0])) {
             oldProcessKill();
         }
-        if(args != null && args.length > 0 && "start".equalsIgnoreCase(args[0])) {
+        else if(existArgs && ("start".equalsIgnoreCase(args[0]) || "run".equalsIgnoreCase(args[0]) ) ) {
             oldProcessKillAndCreatePidFile();
         } else {
-            System.out.println("fanctrl.sh [start|stop]");
+            System.out.println("fanctrl.sh [start|run|stop]");
+            System.exit(1);
             return;
         }
 

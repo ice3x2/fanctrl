@@ -19,7 +19,11 @@ public class Config {
     private int pinNumber = DEFAULT_PIN_NUMBER;
     private int interval = DEFAULT_INTERVAL;
     private String logFile = DEFAULT_LOG_FILE;
+    private String filePath = "";
 
+    public String getFilePath() {
+        return filePath;
+    }
 
     public String getLogFile() {
         return logFile;
@@ -45,10 +49,16 @@ public class Config {
         File file = new File(CONFIG_FILENAME);
         InputStream inputStream;
         try {
-            if (!file.isFile() && !file.canRead()) {
+            if(file.getAbsolutePath().startsWith("/usr/")) {
+                filePath = "/usr/etc/fanctrl/" + CONFIG_FILENAME;
+                inputStream = new FileInputStream(filePath);
+            }
+            else if (!file.isFile() && !file.canRead()) {
                 inputStream = Config.class.getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+                filePath = "Resources";
             } else {
                 inputStream = new FileInputStream(file);
+                filePath = file.getAbsolutePath();
             }
             Properties properties = new Properties();
             properties.load(inputStream);

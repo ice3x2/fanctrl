@@ -8,6 +8,8 @@ plugins {
 group 'com.snoworca.fanCtrl'
 version '0.1.1'
 
+
+
 repositories {
     mavenCentral()
 }
