@@ -6,3 +6,4 @@ deploy/
 .idea/
 .gradle/
 install/fanctrl
+.pid
