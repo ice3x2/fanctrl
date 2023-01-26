@@ -19,20 +19,19 @@ done
 PRGDIR=`dirname "$PRG"`
 DIR_ROOT=`cd "$PRGDIR" ; pwd`
 #if [$# -eq '0' -o $1 -ne 'stop' -a $1 -ne 'start']; then
-if echo $1 | egrep -v "(start)|(stop)|(run)"
+if echo $1 | egrep -v "(startcd ././)|(stop)|(run)"
 then
   echo $0 '<start|run|stop>'
 
 elif echo $1 | egrep -q "stop"
 then
-pid=`cat .pid 2>&1`
-ps -ef | grep $pid
-kill $pid
-
+java -jar $DIR_ROOT"/fanCtrl-{version}.jar" $@
+exit
 elif echo $1 | egrep -q "run"
 then
+  
 java -jar $DIR_ROOT"/fanCtrl-{version}.jar" $@
-
+exit
 elif echo $1 | egrep -q "start"
 then
 nohup java -jar $DIR_ROOT"/fanCtrl-{version}.jar" $@ 1> /dev/null 2>&1 &
